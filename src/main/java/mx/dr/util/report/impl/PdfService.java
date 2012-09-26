@@ -44,6 +44,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
+
 import mx.dr.util.report.IPdfService;
 import mx.dr.util.report.tag.DRPdfColumn;
 import mx.dr.util.report.tag.DRPdfDocument;
@@ -73,13 +75,23 @@ public class PdfService implements IPdfService{
 	/**
 	* directorio donde se almacenan las fuentes.
 	*/
-	private static final String TTFDIR= PdfService.class.getResource( "/drreports.properties").getPath().replaceFirst("/drreports.properties", "") + "/../../TTF" ;//+ ("parametro.pdf.font");
+	private static String TTFDIR;
 	/**
 	* directorio donde se guardan las imagenes.
 	*/
-	private static final String IMGDIR= PdfService.class.getResource( "/drreports.properties").getPath().replaceFirst("/drreports.properties", "") + "/../../IMG"; //+ ("parametro.pdf.image");
+	private static String IMGDIR;
 
-    /**
+	
+    public PdfService() {
+		super();
+		String prop = "/drreports.properties";
+		ResourceBundle resourceBundle=ResourceBundle.getBundle(prop);
+		TTFDIR= PdfService.class.getResource( prop).getPath().replaceFirst(prop, "") + "/../../" +resourceBundle.getString ("dr.reports.pdf.font");
+        IMGDIR= PdfService.class.getResource( prop).getPath().replaceFirst(prop, "") + "/../../" +resourceBundle.getString ("dr.reports.image");
+	}
+
+
+	/**
     * @see mx.dr.util.report.IPdfService#genMultiPagesPDF(java.util.List)
 	*/
 	public String genMultiPagesPDF(List<DRPdfObject> lista) throws Exception{
