@@ -35,8 +35,12 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +48,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import mx.dr.util.report.IPdfService;
@@ -51,7 +56,6 @@ import mx.dr.util.report.tag.DRPdfColumn;
 import mx.dr.util.report.tag.DRPdfDocument;
 import mx.dr.util.report.tag.DRPdfImage;
 import mx.dr.util.report.tag.DRPdfLabel;
-import mx.dr.util.report.tag.DRPdfObject;
 import mx.dr.util.report.tag.DRPdfTable;
 
 /**
@@ -85,21 +89,26 @@ public class PdfService implements IPdfService{
     public PdfService() {
 		super();
 		String prop = "/drreports.properties";
-		ResourceBundle resourceBundle=ResourceBundle.getBundle(prop);
-		TTFDIR= PdfService.class.getResource( prop).getPath().replaceFirst(prop, "") + "/../../" +resourceBundle.getString ("dr.reports.pdf.font");
-        IMGDIR= PdfService.class.getResource( prop).getPath().replaceFirst(prop, "") + "/../../" +resourceBundle.getString ("dr.reports.image");
+		Properties props= new Properties();
+		try {
+			props.load(PdfService.class.getResourceAsStream(prop));
+			String path = PdfService.class.getResource( prop).getPath().replaceFirst(prop, ""); 
+			TTFDIR= path.concat(props.getProperty ("dr.reports.pdf.font"));
+	        IMGDIR= path.concat(props.getProperty ("dr.reports.image")).concat("/");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
 	/**
-    * @see mx.dr.util.report.IPdfService#genMultiPagesPDF(java.util.List)
+    * @see mx.dr.util.report.IPdfService#doMultiReport(List, OutputStream)
 	*/
-	public String genMultiPagesPDF(List<DRPdfObject> lista) throws Exception{
+	public void doMultiReport(List<Object> lista, OutputStream out) throws Exception{
 		DRPdfDocument anonDoc=null;
 		String file=null;
-		for(DRPdfObject o:lista){
+		for(Object o:lista){
 			anonDoc = o.getClass().getAnnotation(DRPdfDocument.class);
-			file = o.fileName();
 			break;
 		}
 		Document doc=null;
@@ -108,7 +117,6 @@ public class PdfService implements IPdfService{
 		}else{
 			doc =  new Document(PageSize.LETTER,0,0,0,0);
 		}
-		FileOutputStream out= new FileOutputStream(IMGDIR+file);
 		PdfWriter.getInstance(doc, out);
 		doc.open();
 		Object dto;
@@ -121,14 +129,13 @@ public class PdfService implements IPdfService{
 		}
 
 		doc.close();
-		return file;
 	}
     
 	
 	/**
-	 * @see mx.dr.util.report.IPdfService#genSinglePDF(mx.dr.util.report.tag.DRPdfDocument)
+	 * @see mx.dr.util.report.IPdfService#doReport(Object, OutputStream)
 	 */
-	public String genSinglePDF( DRPdfObject dto) throws Exception{
+	public void doReport( Object dto, OutputStream out) throws Exception{
 		DRPdfDocument anonDoc=null;
 
 		anonDoc = dto.getClass().getAnnotation(DRPdfDocument.class);
@@ -139,13 +146,10 @@ public class PdfService implements IPdfService{
 			doc =  new Document(PageSize.LETTER,0,0,0,0);
 		}
 
-
-		FileOutputStream out= new FileOutputStream(IMGDIR+dto.fileName());
 		PdfWriter.getInstance(doc, out);
 		doc.open();
 		estampaEtiqueta(doc, dto, null,null);
 		doc.close();
-		return dto.fileName();
 	}
     /**
     * write a label in pdf document.

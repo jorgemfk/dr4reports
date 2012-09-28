@@ -21,9 +21,9 @@
 */
 package mx.dr.util.report;
 
+import java.io.OutputStream;
 import java.util.List;
 
-import mx.dr.util.report.tag.DRPdfObject;
 
 /**
  * Service that generates a PDF document.
@@ -40,17 +40,17 @@ public interface IPdfService {
     * <br/> 
 	* genera un documente con multiples definiciones de plantillas.
 	* @param list list template definitions / lista de definiciones de plantillas.
-	* @return generated document name / nombre del documento generado.
+	* @param out salida donde se escribira el documento resultado.
 	**/
-    public String genMultiPagesPDF( List<DRPdfObject>  list) throws Exception;
+    public void doMultiReport( List<Object>  list, OutputStream out) throws Exception;
     /**
     * Generates a pdf document based on a single template definition.
     * <br/>
 	* genera un documento pdf basado en una sola definicion de plantilla.
 	* @param dto template definition / definicion de la plantilla.
-	* @return document path.
+	* @param out salida donde se escribira el documento resultado.
 	*
 	**/
-    public String genSinglePDF( DRPdfObject dto) throws Exception;
+    public void doReport( Object dto,  OutputStream out) throws Exception;
 }
 
