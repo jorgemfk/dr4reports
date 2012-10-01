@@ -43,7 +43,7 @@ public @interface DRPdfImage {
     /**
 	* embedding style image / estilo de la incrustacion de la imagen.
 	**/
-	public int estilo() default Image.TEXTWRAP;
+	public int style() default Image.TEXTWRAP;
 	/**
 	* image width / anchura de la imagen.
     */

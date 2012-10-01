@@ -42,9 +42,9 @@ public @interface DRPdfTable {
 	/**
 	* proportion of between colonnade / proporcion del entre columnado.
 	*/
-	public float[] proporcionCols();
+	public float[] colsProportions();
 	/**
 	* labels on header columns / etiquetas de las cabeceras de las columnas.
 	*/
-	public String[] etiquetasColumna();
+	public String[] columnLabels();
 }

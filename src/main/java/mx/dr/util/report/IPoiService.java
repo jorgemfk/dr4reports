@@ -37,9 +37,9 @@ public interface IPoiService {
     * Based on the configuration of the object generates the excel report. 
     * <br/>
 	* basado en la configuracion del objeto genera el reporte excel. 
-	* @param is inputstream 
-	* @param dto objeto que define la configuracion y valores del llenado de la informacion.
-	* @param out salida donde se escribira el documento resultado.
+	* @param is InputStream reading excel base template / inputstream de lectura de la plantilla base de excel.
+	* @param dto object that defines the settings and values ​​filling the information / objeto que define la configuracion y valores del llenado de la informacion.
+	* @param out output which will write the result document / salida donde se escribira el documento resultado.
 	*/
 	public void doReport(InputStream is, Object dto, OutputStream out) throws Exception;
 }

@@ -40,5 +40,5 @@ public @interface DRPdfColumn {
     /**
 	* value of the fusion of columns / valor de la fusion de columnas.
 	*/
-	public int colSpan() default 1;
+	public int colspan() default 1;
 }

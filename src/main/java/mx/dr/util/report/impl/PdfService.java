@@ -71,7 +71,7 @@ public class PdfService implements IPdfService{
     /**
 	* formato por defecto de los valores numericos.
 	*/
-	public static final DecimalFormat def = new DecimalFormat( "#,###,###.00");
+	public static final DecimalFormat def = new DecimalFormat( "#,###,##0.00");
 	/**
 	* formato de fecha por defecto.
 	*/
@@ -93,7 +93,7 @@ public class PdfService implements IPdfService{
 		try {
 			props.load(PdfService.class.getResourceAsStream(prop));
 			String path = PdfService.class.getResource( prop).getPath().replaceFirst(prop, ""); 
-			TTFDIR= path.concat(props.getProperty ("dr.reports.pdf.font"));
+			TTFDIR= path.concat(props.getProperty ("dr.reports.pdf.font")).concat("/");
 	        IMGDIR= path.concat(props.getProperty ("dr.reports.image")).concat("/");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -106,7 +106,6 @@ public class PdfService implements IPdfService{
 	*/
 	public void doMultiReport(List<Object> lista, OutputStream out) throws Exception{
 		DRPdfDocument anonDoc=null;
-		String file=null;
 		for(Object o:lista){
 			anonDoc = o.getClass().getAnnotation(DRPdfDocument.class);
 			break;
@@ -175,8 +174,8 @@ public class PdfService implements IPdfService{
 			public int compare(Field o1, Field o2) {
 				DRPdfLabel etiqueta1 = o1.getAnnotation(DRPdfLabel.class);
 				DRPdfLabel etiqueta2 = o2.getAnnotation(DRPdfLabel.class);
-				String uno=int2String(etiqueta1.linea())+"."+int2String(etiqueta1.orden());
-				String dos=int2String(etiqueta2.linea())+"."+int2String(etiqueta2.orden());
+				String uno=int2String(etiqueta1.y())+"."+int2String(etiqueta1.order());
+				String dos=int2String(etiqueta2.y())+"."+int2String(etiqueta2.order());
 				return uno.compareTo(dos);
 
 			}
@@ -207,8 +206,8 @@ public class PdfService implements IPdfService{
 				etiquetaTabla = m.getAnnotation(DRPdfTable.class);
 				PdfPTable tableDance=null;
 				if(etiquetaTabla!=null){
-					tableDance=new PdfPTable(etiquetaTabla.proporcionCols());
-					for(String c:etiquetaTabla.etiquetasColumna()){
+					tableDance=new PdfPTable(etiquetaTabla.colsProportions());
+					for(String c:etiquetaTabla.columnLabels()){
 						tableDance.addCell(c);
 					}
 				}
@@ -234,11 +233,11 @@ public class PdfService implements IPdfService{
 
 				Image ima = Image.getInstance(IMGDIR + valor);
 
-				System.out.println(ima.getPlainWidth());
+				//System.out.println(ima.getPlainWidth());
 				ima.scaleAbsoluteWidth(img.width());
-				System.out.println(ima.getScaledWidth());
+				//System.out.println(ima.getScaledWidth());
 				ima.scaleAbsoluteHeight(ima.getScaledWidth());
-				ima.setAlignment(img.estilo());
+				ima.setAlignment(img.style());
 				ima.setAbsolutePosition(img.x(), img.y());
 				doc.add(ima);
 
@@ -249,13 +248,13 @@ public class PdfService implements IPdfService{
 				PdfPCell cerda=null;
 
 				label = value2String(valor);
-				residuo = etiqueta.longitud() - label.length();
-				label = etiqueta.longitud() > 0 && residuo < 0 ? label
-						.substring(0, etiqueta.longitud()) : label;
+				residuo = etiqueta.length() - label.length();
+				label = etiqueta.length() > 0 && residuo < 0 ? label
+						.substring(0, etiqueta.length()) : label;
 						DRPdfColumn col = m.getAnnotation(DRPdfColumn.class);
 						if(col!=null){
 							cerda=  new PdfPCell(new Paragraph(label));
-							cerda.setColspan(col.colSpan());
+							cerda.setColspan(col.colspan());
 							table.addCell(cerda);
 						}else{
 							table.addCell(label);
@@ -263,11 +262,11 @@ public class PdfService implements IPdfService{
 
 
 			} else {
-				if (lineaActual < etiqueta.linea()) {
+				if (lineaActual < etiqueta.y()) {
 					if (pantagram != null) {
 						doc.add(pantagram);
 					}
-					if (offset == null || etiqueta.linea() > 1) {
+					if (offset == null || etiqueta.y() > 1) {
 						if (etiqueta.offset() > 0) {
 							pantagram = new Paragraph(etiqueta.offset());
 						} else {
@@ -276,44 +275,44 @@ public class PdfService implements IPdfService{
 					} else {
 						pantagram = new Paragraph(offset);
 					}
-					lineaActual = etiqueta.linea();
+					lineaActual = etiqueta.y();
 				}
 
-				if (etiqueta.espaciosAntes() > 0) {
+				if (etiqueta.wspacesBefore() > 0) {
 					sb = new StringBuffer("");
-					llenaBlanco(etiqueta.espaciosAntes(), sb);
+					fillEmpty(etiqueta.wspacesBefore(), sb);
 					font = new Font(Font.COURIER, 12);
 					pantagram.add(new Chunk(sb.toString(), font));
 				}
 				sb = new StringBuffer("");
 				label = value2String(valor);
-				residuo = etiqueta.longitud() - label.length();
-				label = etiqueta.longitud() > 0 && residuo < 0 ? label
-						.substring(0, etiqueta.longitud()) : label;
+				residuo = etiqueta.length() - label.length();
+				label = etiqueta.length() > 0 && residuo < 0 ? label
+						.substring(0, etiqueta.length()) : label;
 
 						if (etiqueta.font().equals(BaseFont.COURIER)) {
-							font = new Font(Font.COURIER, etiqueta.tamanoFont(),etiqueta.style(),new Color(etiqueta.color()[0],etiqueta.color()[1],etiqueta.color()[2]));
+							font = new Font(Font.COURIER, etiqueta.fontSize(),etiqueta.style(),new Color(etiqueta.color()[0],etiqueta.color()[1],etiqueta.color()[2]));
 							adicional = 0;
 						} else {
 							font = FontFactory.getFont(
 									TTFDIR + etiqueta.font(),
 									BaseFont.CP1252, BaseFont.EMBEDDED,
-									etiqueta.tamanoFont(),
+									etiqueta.fontSize(),
 									etiqueta.style(),
 									new Color(etiqueta.color()[0],etiqueta.color()[1],etiqueta.color()[2]));
 							adicional = label.equals("") ? (residuo / 2) + 1 : 0;
 						}
 
-						if (etiqueta.longitud() > 0
-								&& etiqueta.justificado().equals(DRPdfLabel.Justicado.DER)
+						if (etiqueta.length() > 0
+								&& etiqueta.justified().equals(DRPdfLabel.JUSTIFIED.DER)
 								&& residuo > 0) {
-							llenaBlanco(residuo + adicional, sb);
+							fillEmpty(residuo + adicional, sb);
 						}
 						sb.append(label);
-						if (etiqueta.longitud() > 0
-								&& etiqueta.justificado().equals(DRPdfLabel.Justicado.IZQ)
+						if (etiqueta.length() > 0
+								&& etiqueta.justified().equals(DRPdfLabel.JUSTIFIED.IZQ)
 								&& residuo > 0) {
-							llenaBlanco(residuo + adicional, sb);
+							fillEmpty(residuo + adicional, sb);
 						}
 						pantagram.add(new Chunk(sb.toString(), font));
 			}
@@ -328,7 +327,7 @@ public class PdfService implements IPdfService{
 	* @param n numero de espacios en blanco.
 	* @param sb buffer que se rellenara con espacios en blanco.
 	*/
-	private void llenaBlanco(int n, StringBuffer sb){
+	private void fillEmpty(int n, StringBuffer sb){
 		for(int i=0;i< n;i++){
 			sb.append(" ");
 		}
@@ -344,7 +343,7 @@ public class PdfService implements IPdfService{
 		if(value!=null){
 			if(value instanceof String){
 				s = (String) value;
-			}else if(value instanceof BigDecimal){
+			}else if(value instanceof BigDecimal || value instanceof Double){
 				s = def.format(value);
 			}else if(value instanceof Integer){
 				s = value.toString();

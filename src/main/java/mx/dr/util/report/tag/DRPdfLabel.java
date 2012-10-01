@@ -43,7 +43,7 @@ public @interface DRPdfLabel {
     /**
 	* enumeration of definition of justified text / enumeracion de definicion del justificado del texto.
 	*/
-	public enum Justicado{ IZQ,DER;};
+	public enum JUSTIFIED{ IZQ,DER;};
 	/**
 	* specifies the name of the source file ttf generally / especifica el nombre del archivo de la fuente generalmente ttf.
 	*/
@@ -59,29 +59,29 @@ public @interface DRPdfLabel {
 	/**
 	 * font size / tama&ntilde;o de la fuente.
 	 */
-	public int tamanoFont() default 12;
+	public int fontSize() default 12;
 	/**
 	 * absolute distance Y to place the label / distancia absoluta Y para colocar la etiqueta.
 	*/
 	public float offset() default 0.0f;
 	/**
-	* width of a line / anchura de una linea.
+	* Y line number / numero de linea en Y.
 	*/
-	public int linea();
+	public int y();
 	/**
 	* X tag order / orden X de la etiqueta.
 	*/
-	public int orden() default 0;
+	public int order() default 0;
 	/**
 	* number of spaces before the label / cantidad de espacios antes de la etiqueta.
     */
-	public int espaciosAntes();
+	public int wspacesBefore();
 	/**
 	* maximum length of the label if it is truncated beyond / longitud maxima de la etiqueta si se excede se es truncado.
 	*/
-	public int longitud() default 0;
+	public int length() default 0;
 	/**
 	* justified text / justificado del texto.
 	*/
-	public Justicado  justificado() default Justicado.IZQ;
+	public JUSTIFIED  justified() default JUSTIFIED.IZQ;
 }

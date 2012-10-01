@@ -40,7 +40,7 @@ public interface IPdfService {
     * <br/> 
 	* genera un documente con multiples definiciones de plantillas.
 	* @param list list template definitions / lista de definiciones de plantillas.
-	* @param out salida donde se escribira el documento resultado.
+	* @param out output which will write the result document / salida donde se escribira el documento resultado.
 	**/
     public void doMultiReport( List<Object>  list, OutputStream out) throws Exception;
     /**
@@ -48,7 +48,7 @@ public interface IPdfService {
     * <br/>
 	* genera un documento pdf basado en una sola definicion de plantilla.
 	* @param dto template definition / definicion de la plantilla.
-	* @param out salida donde se escribira el documento resultado.
+	* @param out output which will write the result document / salida donde se escribira el documento resultado.
 	*
 	**/
     public void doReport( Object dto,  OutputStream out) throws Exception;

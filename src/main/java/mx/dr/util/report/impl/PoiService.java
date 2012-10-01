@@ -166,14 +166,14 @@ public class PoiService implements IPoiService {
 			cell.setCellValue(new HSSFRichTextString((String)value));
 		}else if(value instanceof Character){
 			cell.setCellValue(new HSSFRichTextString(""+value));
-		}else if(value instanceof Integer||value instanceof Long||value instanceof Double||value instanceof Float){
+		}else if(value instanceof Integer||value instanceof Long||value instanceof Float){
 			cell.setCellValue(new HSSFRichTextString(value.toString()));
 		}else if(value instanceof BigDecimal){
-			DecimalFormat def = new DecimalFormat("#,##0.00");
-			cell.setCellValue(new HSSFRichTextString(def.format((BigDecimal)value)));
+			cell.setCellValue(((BigDecimal)value).doubleValue());
 		}else if(value instanceof Date){
-			SimpleDateFormat df= new SimpleDateFormat("dd/MM/yyyy hh:mm");
-			cell.setCellValue(new HSSFRichTextString(df.format(value)));
+			cell.setCellValue((Date)value);
+		}else if(value instanceof Double){
+			cell.setCellValue((Double)value);
 		}
 	}
 }
