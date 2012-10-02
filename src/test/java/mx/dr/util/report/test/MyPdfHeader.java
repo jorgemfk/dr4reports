@@ -76,8 +76,8 @@ public class MyPdfHeader{
     @DRPdfLabel(y=9,order=3,wspacesBefore=5,justified=DRPdfLabel.JUSTIFIED.IZQ, font="FLO.ttf", fontSize=12)
     private String beneficios;
     
-    @DRPdfLabel(wspacesBefore=0,y=10,offset=180f)
-    @DRPdfTable(colsProportions={0.25f, 0.25f, 0.25f, 0.25f},columnLabels={"Code", "Name", "Date", "Amount"})
+    @DRPdfLabel(wspacesBefore=0,y=7,offset=100f)
+    @DRPdfTable(colsPercentage={0.25f, 0.25f, 0.25f, 0.25f},columnLabels={"Code", "Name", "Date", "Amount"})
     private List<MyPdfDetail> details =  new ArrayList<MyPdfDetail>();
     
     

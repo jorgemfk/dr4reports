@@ -40,9 +40,9 @@ import java.lang.annotation.Target;
 public @interface DRPdfTable {
 	//public int colums();
 	/**
-	* proportion of between colonnade / proporcion del entre columnado.
+	* proportion between colonnade / proporcion del entre columnado.
 	*/
-	public float[] colsProportions();
+	public float[] colsPercentage();
 	/**
 	* labels on header columns / etiquetas de las cabeceras de las columnas.
 	*/

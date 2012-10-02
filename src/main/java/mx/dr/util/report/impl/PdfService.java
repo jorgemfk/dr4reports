@@ -21,6 +21,27 @@
 */
 package mx.dr.util.report.impl;
 
+import java.awt.Color;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+
+import mx.dr.util.report.IPdfService;
+import mx.dr.util.report.tag.DRPdfColumn;
+import mx.dr.util.report.tag.DRPdfDocument;
+import mx.dr.util.report.tag.DRPdfImage;
+import mx.dr.util.report.tag.DRPdfLabel;
+import mx.dr.util.report.tag.DRPdfTable;
+
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -33,30 +54,6 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import java.awt.Color;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
-import mx.dr.util.report.IPdfService;
-import mx.dr.util.report.tag.DRPdfColumn;
-import mx.dr.util.report.tag.DRPdfDocument;
-import mx.dr.util.report.tag.DRPdfImage;
-import mx.dr.util.report.tag.DRPdfLabel;
-import mx.dr.util.report.tag.DRPdfTable;
 
 /**
  *
@@ -206,7 +203,8 @@ public class PdfService implements IPdfService{
 				etiquetaTabla = m.getAnnotation(DRPdfTable.class);
 				PdfPTable tableDance=null;
 				if(etiquetaTabla!=null){
-					tableDance=new PdfPTable(etiquetaTabla.colsProportions());
+					tableDance=new PdfPTable(etiquetaTabla.colsPercentage());
+					tableDance.setSpacingBefore(etiqueta.offset());
 					for(String c:etiquetaTabla.columnLabels()){
 						tableDance.addCell(c);
 					}
@@ -223,7 +221,7 @@ public class PdfService implements IPdfService{
 					}
 				}
 				if(etiquetaTabla!=null){
-					doc.add(tableDance);
+					doc.add( tableDance);
 				}
 			}else if(img!=null){
 				/* File file = new File(IMGDIR + valor);
